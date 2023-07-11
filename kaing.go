@@ -87,7 +87,7 @@ func checkRows(board [][]int, p int) bool {
 
 }
 
-func checkDiag(board [][]int, p int) bool {
+func checkDiags(board [][]int, p int) bool {
 	// check for a Kaing in every diagonales
 
 	n := len(board)
@@ -130,7 +130,7 @@ func checkDiag(board [][]int, p int) bool {
 	return false
 }
 
-func checkAntiDiag(board [][]int, p int) bool {
+func checkAntiDiags(board [][]int, p int) bool {
 	// check a for a Kaing in every anti-diagonales
 
 	n := len(board)
@@ -177,5 +177,5 @@ func checkAntiDiag(board [][]int, p int) bool {
 func Win(board [][]int, p int) bool {
 	// check is player p did a Kaing
 
-	return checkCols(board, p) || checkRows(board, p) || checkDiag(board, p) || checkAntiDiag(board, p)
+	return checkCols(board, p) || checkRows(board, p) || checkDiags(board, p) || checkAntiDiags(board, p)
 }
