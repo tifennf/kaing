@@ -2,7 +2,7 @@ package kaing
 
 func GenerateBoard(n int) [][]int {
 	// generate a n x n board
-	// 0: empty case; 1: p1 dot; 2: p2 dot
+	// pre: n >= 5
 
 	res := make([][]int, n)
 
@@ -27,6 +27,7 @@ func PlaceDot(board [][]int, p int, x int, y int) [][]int {
 
 func checkCols(board [][]int, p int) bool {
 	// check for a Kaing in every columns
+	// pre: p > 0
 
 	n := len(board)
 
@@ -57,6 +58,7 @@ func checkCols(board [][]int, p int) bool {
 
 func checkRows(board [][]int, p int) bool {
 	// check for a for a Kaing in every rows
+	// pre: p > 0
 
 	n := len(board)
 
@@ -89,6 +91,7 @@ func checkRows(board [][]int, p int) bool {
 
 func checkDiags(board [][]int, p int) bool {
 	// check for a Kaing in every diagonales
+	// pre: p > 0
 
 	n := len(board)
 
@@ -132,6 +135,7 @@ func checkDiags(board [][]int, p int) bool {
 
 func checkAntiDiags(board [][]int, p int) bool {
 	// check a for a Kaing in every anti-diagonales
+	// pre: p > 0
 
 	n := len(board)
 
@@ -176,6 +180,7 @@ func checkAntiDiags(board [][]int, p int) bool {
 
 func Win(board [][]int, p int) bool {
 	// check is player p did a Kaing
+	// pre: p > 0
 
 	return checkCols(board, p) || checkRows(board, p) || checkDiags(board, p) || checkAntiDiags(board, p)
 }
