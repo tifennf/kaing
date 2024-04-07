@@ -1,5 +1,10 @@
 package kaing
 
+import (
+	"context"
+	"sync"
+)
+
 func GenerateBoard(n int) [][]int {
 	// generate a n x n board
 	// pre: n >= 5
@@ -135,29 +140,23 @@ func checkDiags(board [][]int, p int) bool {
 
 func checkAntiDiags(board [][]int, p int) bool {
 	// check a for a Kaing in every anti-diagonales
-	// pre: p > 0
+	// pre: p > 0 && board is a valid board with size >= 5
 
 	n := len(board)
 
-	kSup := 1 + 2*(n-1)
+	iBasis := 4
+	jBasis := 0
 
-	k := 0
-	for k < kSup {
+	// check the anti-diagonales, no need for the last 5 columns or first 5 rows
+	for iBasis < n && jBasis < n-5 {
 		count := 0
 
-		var i int
-		var j int
+		// initial point of the anti-diagonale
+		i := iBasis
+		j := jBasis
 
-		if k < n {
-			i = k
-			j = 0
-		} else {
-			i = n - 1
-			j = k%n + 1
-		}
-
+		// iterate over the anti-diagonale to check for a Kaing
 		for i >= 0 && j < n {
-
 			if board[i][j] == p {
 				count++
 			} else {
@@ -172,15 +171,76 @@ func checkAntiDiags(board [][]int, p int) bool {
 			j++
 		}
 
-		k++
+		// if we are not at the last anti-diagonale, we move to the next one
+		if iBasis < n-1 {
+			iBasis++
+		} else {
+			jBasis++
+		}
 	}
 
 	return false
 }
 
 func Win(board [][]int, p int) bool {
-	// check is player p did a Kaing
+	// check if player p did a Kaing
 	// pre: p > 0
 
-	return checkCols(board, p) || checkRows(board, p) || checkDiags(board, p) || checkAntiDiags(board, p)
+	nb_checks := 4
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	var wg sync.WaitGroup
+
+	out := make(chan bool, nb_checks)
+
+	checks := []func(board [][]int, p int) bool{
+		checkCols,
+		checkDiags,
+		checkAntiDiags,
+		checkRows,
+	}
+
+	wg.Add(nb_checks)
+	for _, check := range checks {
+		go func(check func(board [][]int, p int) bool) {
+			defer wg.Done()
+
+			if check(board, p) {
+				select {
+				case out <- true:
+				case <-ctx.Done():
+				}
+				cancel()
+			}
+		}(check)
+	}
+
+	go func() {
+		wg.Wait()
+		close(out)
+	}()
+
+	for result := range out {
+		if result {
+			return true
+		}
+	}
+
+	return false
+}
+
+func PrintBoard(board [][]int) {
+	// print the board
+	// pre: board is a valid board
+
+	n := len(board)
+
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			print(board[i][j], " ")
+		}
+		println()
+	}
 }

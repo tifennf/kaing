@@ -1,8 +1,10 @@
 package kaing
 
-import "testing"
+import (
+	"testing"
+)
 
-const boardSize int = 30
+const boardSize int = 20
 
 func TestGenerateBoard(t *testing.T) {
 	board := GenerateBoard(boardSize)
@@ -24,7 +26,7 @@ func TestGenerateBoard(t *testing.T) {
 }
 
 func TestPlaceDot(t *testing.T) {
-	board := GenerateBoard(30)
+	board := GenerateBoard(boardSize)
 
 	board = PlaceDot(board, 1, 3, 3)
 
@@ -38,9 +40,9 @@ func Test_checkCols(t *testing.T) {
 	board := GenerateBoard(boardSize)
 
 	// place a kaing in col
-	i := 3
-	j := 18
-	for i < 7 {
+	i := boardSize / 2
+	j := boardSize / 2
+	for i < boardSize/2+4 {
 		board = PlaceDot(board, 1, i, j)
 		i++
 	}
@@ -54,15 +56,16 @@ func Test_checkCols(t *testing.T) {
 	if !checkCols(board, 1) {
 		t.Error("Kaing in column, but no win")
 	}
+
 }
 
 func Test_checkRows(t *testing.T) {
 	board := GenerateBoard(boardSize)
 
 	// place a kaing in row
-	i := 18
-	j := 3
-	for j < 7 {
+	i := 0
+	j := 0
+	for j < 4 {
 		board = PlaceDot(board, 1, i, j)
 		j++
 	}
@@ -82,9 +85,9 @@ func Test_checkDiags(t *testing.T) {
 	board := GenerateBoard(boardSize)
 
 	// place a kaing in diagonale
-	i := 0
+	i := 4
 	j := 3
-	for i < 4 && j < 7 {
+	for i < 8 && j < 7 {
 		board = PlaceDot(board, 2, i, j)
 		i++
 		j++
@@ -103,11 +106,11 @@ func Test_checkDiags(t *testing.T) {
 
 func Test_checkAntiDiags(t *testing.T) {
 	board := GenerateBoard(boardSize)
-
+	n := len(board)
 	// place a kaing in anti-diagonale
-	i := 20
-	j := 16
-	for i < 24 && j < 20 {
+	i := n / 2
+	j := 0
+	for i >= 0 && j < 4 {
 		board = PlaceDot(board, 2, i, j)
 		i--
 		j++
@@ -121,6 +124,10 @@ func Test_checkAntiDiags(t *testing.T) {
 
 	if !checkAntiDiags(board, 2) {
 		t.Error("Kaing in anti-diagonale, but no win")
+	}
+
+	if checkAntiDiags(board, 1) {
+		t.Error("Win when no kaing in anti-diagonales for player 1")
 	}
 }
 
