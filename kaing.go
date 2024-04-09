@@ -18,6 +18,13 @@ func GenerateBoard(n int) [][]int {
 	return res
 }
 
+func IsEmpty(board [][]int, x int, y int) bool {
+	// check if a case is empty
+	// pre: (x,y) is a valid case coordinate
+
+	return board[x][y] == 0
+}
+
 func PlaceDot(board [][]int, p int, x int, y int) [][]int {
 	// place p dot in (x,y) board's case, no board mutation
 	// pre: (x,y) is a valid case coordinate and empty
@@ -151,7 +158,7 @@ func checkAntiDiags(board [][]int, p int) bool {
 	for iBasis < n && jBasis < n-5 {
 		count := 0
 
-		// initial point of the anti-diagonale
+		// initial point of the current anti-diagonale
 		i := iBasis
 		j := jBasis
 
